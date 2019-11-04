@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hqyj.dao.StuGMapper">
+	<resultMap id="Map1" type="Stu">
+		<id column="sid" property="sid" />
+		<result column="sno" property="sno" />
+		<result column="sname" property="sname" />
+		<result column="sex" property="sex" />
+		<collection property="grade" ofType="Grade">
+			<id column="gid" property="gid" />
+			<result column="grade" property="grade" />
+		</collection>
+		<collection property="course" ofType="Course">
+			<id column="cid" property="cid" />
+			<result column="cname" property="cname" />
+		</collection>
+	</resultMap>
+	
+
+	<!-- 查询全部学生成绩 -->
+	<select id="queryStudentGrade" resultMap="Map1">
+		SELECT * FROM stu s,grade g,course c where s.sid=g.sid and c.cid=g.cid ORDER BY s.sno,g.cid
+	</select>
+	<!-- 查询学生个人成绩 -->
+	<select id="queryStudentGradeg" resultMap="Map1">
+		SELECT * FROM stu s,grade g,course c where s.sid=g.sid and c.cid=g.cid and s.sno=#{ton} ORDER BY s.sno,g.cid 
+	</select>
+
+
+<!-- 添加学生成绩 -->
+	<insert id="addStudentGrade" parameterType="com.hqyj.entity.Grade1">
+		INSERT into grade(sid,cid,grade) VALUES (#{sid},1,#{g1}),(#{sid},2,#{g2}),(#{sid},3,#{g3}),(#{sid},4,#{g4}),(#{sid},5,#{g5})
+		
+	</insert>
+	
+	
+	<select id="findStudentGradeById" parameterType="int" resultMap="Map1">
+		SELECT * FROM stu s,grade g,course c where s.sid=g.sid and c.cid=g.cid  and g.sid=#{sid} ORDER BY s.sno,g.cid
+	</select>
+	
+	<!-- 修改学生成绩 -->
+	 <update id="updateStudentGrade" parameterType="int">
+		update grade set cid=#{0},grade=#{1}  where sid=#{2} and gid=#{3}
+	</update> 
+	
+	<!-- 删除学生成绩 -->
+	<delete id="deleteStudentGrade" parameterType="int">
+		DELETE FROM grade WHERE sid=#{sid}
+	</delete>
+</mapper>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="jq/echarts.js"></script>
+<script type="text/javascript" src="jq/jquery.js"></script>
+<script type="text/javascript">
+function show() {
+	var echart=echarts.init(document.getElementById('main'))
+	 var url="http://localhost:8080/five-c3po-day1-day40/Echart";
+	 alert(url);
+	$.ajax({
+		url:url,
+		dataType:"json",
+		type:"post",
+		success:function(json){
+			alert(json.nameList);
+			alert(json.profitList);
+			var nameList=json.nameList;
+			var profitList=json.profitList;
+			 var option = {
+			            title: {
+			                text: 'ECharts 入门示例'
+			            },
+			            tooltip: {},
+			            legend: {
+			                data:['销量']
+			            },
+			            xAxis: {
+			                data: nameList
+			            },
+			            yAxis: {},
+			            series: [{
+			                name: '销量',
+			                type: 'bar',
+			                data: profitList
+			            }]
+			        };
+
+			        // 使用刚指定的配置项和数据显示图表。
+			        echart.setOption(option);
+		}
+	});
+}
+
+</script>
+</head>
+<body>
+<button onclick="show()">触发</button>
+<div id="main" style="width: 500px;height: 600px"></div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hqyj.dao.StuMapper" >
+  <resultMap id="BaseResultMap" type="com.hqyj.entity.Stu" >
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="sno" property="sno" jdbcType="VARCHAR" />
+    <result column="sname" property="sname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="spwd" property="spwd" jdbcType="VARCHAR" />  
+  	<association property="role" javaType="com.hqyj.entity.Role">
+			<id column="rid" property="rid"/>
+			<result column="rname" property="rname"/>
+		</association>
+  </resultMap>
+  
+   <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  SELECT *from stu s,role r where s.rid = r.rid and s.sno=#{son}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <resultMap id="stu" type="com.hqyj.entity.Stu" >
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="sno" property="sno" jdbcType="VARCHAR" />
+    <result column="sname" property="sname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="spwd" property="spwd" jdbcType="VARCHAR" />
+    
+  	<association property="banji" javaType="com.hqyj.entity.Banji">
+			<id column="bid" property="bid"/>
+			<result column="bno" property="bno"/>
+			<result column="bname" property="bname"/>
+	</association>
+	<collection property="course" ofType="com.hqyj.entity.Course">
+			<id column="cid" property="cid"/>
+			<result column="cname" property="cname"/>
+	</collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    sid, sno, sname, sex, spwd, rid
+  </sql>
+  
+   <!-- 查询学生信息 -->
+   <select id="findstuall" parameterType="com.hqyj.entity.Stu" resultMap="stu">
+ 		  SELECT *from stu s,link_banji_stu b,banji bj ,(SELECT s.sid,c.cid,c.cname from stu s,course c ,link_stu_course sc WHERE sc.cid=c.cid and sc.sid=s.sid) as cs  where s.sid=cs.sid and s.sid=b.sid and b.bid=bj.bid 
+  </select>
+  
+  
+  <!-- 根据sid查询学生所选课程信息信息 -->
+   <select id="selectCourse" parameterType="com.hqyj.entity.All" resultMap="stu">
+ 		  SELECT *from stu s,link_banji_stu b,banji bj ,(SELECT s.sid,c.cid,c.cname from stu s,course c ,link_stu_course sc WHERE sc.cid=c.cid and sc.sid=s.sid) as cs  where s.sid=cs.sid and s.sid=b.sid and b.bid=bj.bid and  s.sid=#{sid}
+  </select>
+  <!-- 根据sid查询学生所选课程信息信息 -->
+   <select id="selectCourseg" parameterType="com.hqyj.entity.All" resultMap="stu">
+ 		  SELECT *from stu s,link_banji_stu b,banji bj ,(SELECT s.sid,c.cid,c.cname from stu s,course c ,link_stu_course sc WHERE sc.cid=c.cid and sc.sid=s.sid) as cs  where s.sid=cs.sid and s.sid=b.sid and b.bid=bj.bid and s.sno="${sno}"
+  </select>
+  
+    <!-- 根据id删除学生信息 -->
+  <delete id="delectstu" parameterType="com.hqyj.entity.Stu">
+  	DELETE from stu  where sid=#{sid};
+  </delete>
+  
+  <!-- 新增学生信息 -->
+  <insert id="addStu" parameterType="com.hqyj.entity.Stu"  useGeneratedKeys="true" keyProperty="sid">
+  		INSERT into stu VALUES(NULL,#{sno},#{sname},#{sex},#{spwd},5)
+  </insert>
+  
+  <insert id="addBanji" parameterType="com.hqyj.entity.Banji1"  useGeneratedKeys="true" keyProperty="sid">
+  		INSERT INTO link_banji_stu VALUES (null,#{sid},#{bid})
+  </insert>
+  <insert id="addCourse" parameterType="com.hqyj.entity.Course1"  useGeneratedKeys="true" keyProperty="sid">
+  		INSERT INTO link_stu_course VALUES (null,#{sid},#{cid})
+  </insert>
+  
+  
+  
+  <!-- 新增课程信息 -->
+  <insert id="insertCourse" parameterType="com.hqyj.entity.Course1" >
+  		INSERT INTO link_stu_course VALUES (null,#{sid},#{cid})
+  </insert>
+  
+  
+  
+  
+  <!-- rg -->
+  <resultMap id="BaseResultMap1" type="com.hqyj.entity.Stu" >
+    <id column="sid" property="sid" jdbcType="INTEGER" />
+    <result column="sno" property="sno" jdbcType="VARCHAR" />
+    <result column="sname" property="sname" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="spwd" property="spwd" jdbcType="VARCHAR" />
+    
+  	<association property="role" javaType="com.hqyj.entity.Role">
+			<id column="rid" property="rid"/>
+			<result column="rname" property="rname"/>
+		</association>
+		<association property="banji" javaType="Banji">
+		 <id column="bid" jdbcType="INTEGER" property="bid" />
+    <result column="bno" jdbcType="VARCHAR" property="bno" />
+    <result column="bname" jdbcType="VARCHAR" property="bname" />
+    <result column="tid" jdbcType="INTEGER" property="tid" />
+		</association>
+		<association property="teacher" javaType="Teacher">
+		 <id column="tid" property="tid" jdbcType="INTEGER" />
+    <result column="tname" property="tname" jdbcType="VARCHAR" />
+    <result column="ton" property="ton" jdbcType="VARCHAR" />
+    <result column="tsex" property="tsex" jdbcType="VARCHAR" />
+    <result column="tpwd" property="tpwd" jdbcType="VARCHAR" />
+    <result column="tcourse" property="tcourse" jdbcType="INTEGER" />
+		</association>
+  </resultMap>
+   <select id="findSByName" parameterType="java.lang.String" resultMap="BaseResultMap1">
+    SELECT * from stu s,banji b, link_banji_stu l, role r ,teacher t where t.tid=b.tid and  s.rid=r.rid and s.sid=l.sid and b.bid=l.bid and s.sno=#{son}
+  </select>
+   <update id="updatepass" parameterType="PassWord">
+     UPDATE stu set spwd="${newpwd}" where sno="${name}" and spwd="${oldpwd}" 
+  
+  </update>
+  
+  
+  
+  
+</mapper>

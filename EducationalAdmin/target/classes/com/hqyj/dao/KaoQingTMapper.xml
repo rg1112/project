@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hqyj.dao.KaoQingTMapper">
+	<resultMap id="PersonResultMap" type="KaoQing">
+	        <id column="tkid" property="tkid" />
+			<result column="ttime" property="ttime" />
+			<result column="tkcontebt" property="tkcontebt" />
+		<collection property="te" ofType="Teacher">
+			<id column="tid" property="tid" jdbcType="INTEGER" />
+		    <result column="tname" property="tname" />
+		    <result column="ton" property="ton" />
+		    <result column="tsex" property="tsex"  />
+		</collection>
+	</resultMap>
+	
+	<select id="findPersonkq" parameterType="java.lang.String" resultMap="PersonResultMap">
+		SELECT * from t_kaoqing k,teacher t where t.tid = k.tid and t.ton=#{tonp}
+	</select>
+</mapper>

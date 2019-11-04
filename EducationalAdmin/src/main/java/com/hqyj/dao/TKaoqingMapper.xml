@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hqyj.dao.TKaoqingMapper" >
+	<resultMap type="TKaoqing" id="findTkaoqing">
+		<id column="tkid" property="tkid"/>
+		<id column="tid" property="tid" jdbcType="INTEGER" />
+		<result column="ttime" property="ttime"/>
+		<result column="tkcontebt" property="tkcontebt"/>
+		<collection property="teacher" ofType="Teacher">
+			<id column="tid" property="tid" jdbcType="INTEGER" />
+		    <result column="tname" property="tname" jdbcType="VARCHAR" />
+		    <result column="ton" property="ton" jdbcType="VARCHAR" />
+		    <result column="tsex" property="tsex" jdbcType="VARCHAR" />
+		    <result column="tpwd" property="tpwd" jdbcType="VARCHAR" />
+		    <result column="tcourse" property="tcourse" jdbcType="INTEGER" />	
+		</collection>
+	</resultMap>
+	
+	<select id="findTkaoqingAll" parameterType="com.hqyj.entity.TKaoqing" resultMap="findTkaoqing">
+  			SELECT * from  teacher t LEFT JOIN t_kaoqing k on k.tid=t.tid
+	</select>
+	
+	<!-- 修改 -->
+	<update id="updateTkaoqingBytkid" parameterType="com.hqyj.entity.TKaoqing" >
+		UPDATE t_kaoqing  SET ttime=#{ttime},tkcontebt=#{tkcontebt} where tkid=#{tkid};
+	</update>
+	
+	<select id="selectkq" resultMap="findTkaoqing" parameterType="com.hqyj.entity.TKaoqing">
+  		SELECT * from t_kaoqing k,teacher t where k.tid=t.tid and k.tkid=#{tkid};
+	</select>
+	
+	<!-- 根据tid查找 -->
+	<select id="selectkqt" resultMap="findTkaoqing" parameterType="com.hqyj.entity.TKaoqing">
+  		SELECT * from teacher  where tid=#{tid};
+	</select>
+	
+	<!-- 新增教师考勤 -->
+  <insert id="addTkaoqing" parameterType="com.hqyj.entity.TKaoqing"  useGeneratedKeys="true" keyProperty="id">
+  		insert into t_kaoqing values(null,#{tid},#{ttime},#{tkcontebt})
+  </insert>
+  
+  <!-- 根据id删除教师考勤信息 -->
+  <delete id="delectTkaoq" parameterType="java.lang.Integer">
+  	DELETE from t_kaoqing  where tkid=#{tkid}
+  </delete>
+  
+	
+</mapper>

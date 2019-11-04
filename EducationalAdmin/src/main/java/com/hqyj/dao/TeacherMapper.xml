@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hqyj.dao.TeacherMapper" >
+  <resultMap id="BaseResultMap" type="com.hqyj.entity.Teacher" >
+    <id column="tid" property="tid" jdbcType="INTEGER" />
+    <result column="tname" property="tname" jdbcType="VARCHAR" />
+    <result column="ton" property="ton" jdbcType="VARCHAR" />
+    <result column="tsex" property="tsex" jdbcType="VARCHAR" />
+    <result column="tpwd" property="tpwd" jdbcType="VARCHAR" />
+    <result column="tcourse" property="tcourse" jdbcType="INTEGER" />
+    <result column="rid" property="rid" jdbcType="INTEGER" />
+  	<association property="role" javaType="com.hqyj.entity.Role">
+			<id column="rid" property="rid"/>
+			<result column="rname" property="rname"/>
+		</association>
+		<association property="course" javaType="Course">
+		<id column="cid" jdbcType="INTEGER" property="cid" />
+    	<result column="cname" jdbcType="VARCHAR" property="cname" />
+		</association>
+		<!-- <association property="password" javaType="PassWord">
+		 <result column="oldpwd" property="oldpwd" jdbcType="VARCHAR" />
+		  <result column="newpwd" property="newpwd" jdbcType="VARCHAR" />
+		   <result column="name" property="name" jdbcType="VARCHAR" />
+		</association> -->
+  </resultMap>
+ 
+  <insert id="insert" parameterType="Teacher">
+  insert INTO teacher(tname,ton,tsex,tpwd,tcourse,rid) VALUES("${tname}","${ton}","${tsex}","${tpwd}","${tcourse}","${rid}")
+  
+  </insert>
+  <update id="update" parameterType="Teacher">
+   UPDATE teacher set tname=#{tname},ton=#{ton},tsex=#{tsex},tcourse=#{tcourse},rid=#{rid} where tid=#{tid}
+  
+  </update>
+   <update id="updatepass" parameterType="PassWord">
+     UPDATE teacher set tpwd="${newpwd}" where ton="${name}" and tpwd="${oldpwd}" 
+  
+  </update>
+  <select id="findByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  SELECT *from teacher t,role r where t.rid = r.rid and t.ton=#{ton}
+  </select>
+  
+   <select id="findTByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT *from teacher t LEFT JOIN role r on t.rid=r.rid LEFT JOIN course c on t.tcourse=c.cid where ton=#{ton}
+  </select>
+  <select id="findTByTid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT *from teacher t LEFT JOIN role r on t.rid=r.rid LEFT JOIN course c on t.tcourse=c.cid where t.tid=#{tid}
+  </select>
+  <select id="findAll"  resultMap="BaseResultMap">
+   SELECT *from teacher t,role r, course c where t.rid = r.rid and t.tcourse=c.cid
+  </select>
+  <delete id="deleteT" parameterType="java.lang.String">
+   DELETE FROM teacher where tid=#{tid}
+  </delete>
+</mapper>
